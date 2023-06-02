@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Juego de Memoria</title>
+  <style>
+    .memory-card {
+      width: 100px;
+      height: 100px;
+      background-color: #ccc;
+      margin: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .memory-card.flip {
+      background-color: var(--card-color);
+    }
+  </style>
+</head>
+<body>
+  <h2>Juego de Memoria</h2>
+
+  <div id="game-board">
+    <!-- Las tarjetas del juego se generarán aquí -->
+  </div>
+
+  <script>
+    var gameBoard = document.getElementById("game-board");
+    var colors = ["red", "red", "blue", "blue", "green", "green", "yellow", "yellow", "purple", "purple"];
+    var flippedCards = [];
+
+    // Función para barajar los colores
+    function shuffle(array) {
+      var currentIndex = array.length;
+      var temporaryValue, randomIndex;
+
+      while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+      }
+
+      return array;
+    }
+
+    // Función para crear las tarjetas
+    function createCards() {
+      colors = shuffle(colors);
+
+      for (var i = 0; i < colors.length; i++) {
+        var card = document.createElement("div");
+        card.className = "memory-card";
+        card.style.setProperty("--card-color", colors[i]);
+        card.addEventListener("click", flipCard);
+        gameBoard.appendChild(card);
+      }
+    }
+
+    // Función para voltear una tarjeta
+    function flipCard() {
+      if (flippedCards.length < 2 && !this.classList.contains("flip")) {
+        this.classList.add("flip");
+        flippedCards.push(this);
+
+        if (flippedCards.length === 2) {
+          checkMatch();
+        }
+      }
+    }
+
+    // Función para comprobar si las tarjetas son iguales
+    function checkMatch() {
+      var card1 = flippedCards[0];
+      var card2 = flippedCards[1];
+
+      if (card1.style.getPropertyValue("--card-color") === card2.style.getPropertyValue("--card-color")) {
+        flippedCards = [];
+      } else {
+        setTimeout(function() {
+          card1.classList.remove("flip");
+          card2.classList.remove("flip");
+          flippedCards = [];
+        }, 1000);
+      }
+    }
+
+    // Llamar a la función para crear las tarjetas
+    createCards();
+  </script>
+</body>
+</html>
+
